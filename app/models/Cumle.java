@@ -1,19 +1,19 @@
 package models;
 
-import play.*;
-import play.db.jpa.*;
+import javax.persistence.Entity;
 
-import javax.persistence.*;
-import java.util.*;
+import play.db.jpa.Model;
 
 @Entity
 public class Cumle extends Model {
 
     public String cumle;
 
-    public Cumle(String cumle) {
+    public Boolean enabled = Boolean.TRUE;
+
+    public Cumle(String cumle, Boolean enabled) {
 
         this.cumle = cumle;
+        this.enabled = enabled;
     }
-
 }

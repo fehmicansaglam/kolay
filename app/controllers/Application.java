@@ -10,6 +10,7 @@ import models.Role;
 import models.User;
 import play.Logger;
 import play.i18n.Messages;
+import play.libs.Codec;
 import play.mvc.After;
 import play.mvc.Before;
 import play.mvc.Catch;
@@ -17,6 +18,7 @@ import play.mvc.Controller;
 import play.mvc.Finally;
 import utils.Utils;
 import cache.CacheManager;
+import cache.CacheManager.CacheKey;
 
 public class Application extends Controller {
 
@@ -52,13 +54,16 @@ public class Application extends Controller {
         List users = User.findAll();
         Role role = new Role();
         role.name = "test_role";
+        role.save();
         System.out.println("role name: " + role.name);
         render(users);
     }
 
     public static void save(String name) {
 
-        validation.required(name).message(Messages.get("validation.required.custom", "Custom field name"));
+        validation.required(name)
+                .message(Messages.get("validation.required.custom",
+                                      "Custom field name"));
         if (validation.hasErrors()) {
             params.flash(); // add http parameters to the flash scope
             validation.keep(); // keep the errors for the next request
@@ -128,11 +133,28 @@ public class Application extends Controller {
 
     public static void stats() {
 
-        Long userCount = CacheManager.userCount();
-        Long roleCount = CacheManager.roleCount();
-        Long eventCount = CacheManager.eventCount();
-        Long cumleCount = CacheManager.cumleCount();
+        Long userCount = CacheManager.get(CacheKey.USER_COUNT);
+        Long roleCount = CacheManager.get(CacheKey.ROLE_COUNT);
+        Long eventCount = CacheManager.get(CacheKey.EVENT_COUNT);
+        Long cumleCount = CacheManager.get(CacheKey.CUMLE_COUNT);
+        Long cumleEnabledCount = CacheManager.get(CacheKey.CUMLE_ENABLED_COUNT);
 
-        render(userCount, roleCount, eventCount, cumleCount);
+        render(userCount, roleCount, eventCount, cumleCount, cumleEnabledCount);
+    }
+
+    public static void cumleler() {
+
+        long start = System.nanoTime();
+        ArrayList<Cumle> cumleler = CacheManager.get(CacheKey.CUMLELER);
+        long end = System.nanoTime();
+        Logger.info("Cumleler işlem zamanı: %d", end - start);
+        render(cumleler);
+    }
+
+    public static void cumleOlustur() {
+
+        Cumle cumle = new Cumle(Codec.UUID(), Boolean.TRUE).save();
+        Logger.info("Yeni cümle: %s", cumle.cumle);
+        cumleler();
     }
 }
