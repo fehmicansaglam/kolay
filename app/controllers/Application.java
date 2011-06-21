@@ -46,4 +46,24 @@ public class Application extends Controller {
 		renderJSON(users);
 	}
 
+	public static void getUser(Long id) {
+		notFoundIfNull(id);
+		User user = User.findById(id);
+		notFoundIfNull(user);
+		renderJSON(user);
+	}
+
+	public static void createUser(String username, String fullName) {
+		User user = new User(username, fullName).save();
+		renderJSON(user);
+	}
+
+	public static void deleteUser(Long id) {
+		notFoundIfNull(id);
+		User user = User.findById(id);
+		notFoundIfNull(user);
+		user.delete();
+		renderJSON(true);
+	}
+
 }

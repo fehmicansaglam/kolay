@@ -1,34 +1,107 @@
 #{extends 'main.html' /}
 #{set title:'Home' /}
 
-<ul>
+<ul id="userList">
 #{list users, as: 'user'}
-	<li>${user.username}: <b>${user.fullName}</b></li>
+	<li>
+		<a href="#" class="userInfo" id="${user.id}">${user.username}</a>
+		<a href="#" class="deleteUser">Sil</a>
+	</li>
 #{/list}
 </ul>
+<div id="userInfo">
+<span style="display:block" id="username"></span>
+<span style="display:block" id="fullName"></span>
+<span style="display:block" id="created"></span>
+</div>
 
-<label for="user">&{'Username'}</label>
+<div>
+<input type="text" id="newUsername" size="15" />
+<input type="text" id="newFullName" size="15" />
+<a href="#" id="createUser">create user</a>
+</div>
+
+*{<label for="user">&{'Username'}</label>
 <input type="text" id="user" size="40" />
-<sub>&{'Enter-your-username'}</sub>
+<sub>&{'Enter-your-username'}</sub>}*
 <script>
-$( "#user" ).autocomplete({
-    source: function( request, response ) {
-        $.ajax({
-            url: "@{Application.users()}",
+$(function(){
+	$('.userInfo').live("click", function(){
+		var id = $(this).attr('id');
+		$.ajax({
+			type: 'GET',
+            url: "@{Application.getUser()}",
             dataType: "json",
             data: {
-                term: request.term
+                id: id
             },
             success: function( data ) {
-                response( $.map( data, function( item ) {
-                    return {
-                        label: item.fullName,
-                        value: item.username
-                    }
-                }));
+                $('#username').text(data.username);
+                $('#fullName').text(data.fullName);
+                $('#created').text(data.created);
             }
         });
-    },
-    minLength: 2
-});
+		return false;
+	});
+	
+	$('#createUser').click(function(){
+		var username = $('#newUsername').val();
+		var fullName = $('#newFullName').val();
+		$.ajax({
+			type: 'POST',
+            url: "@{Application.createUser()}",
+            dataType: "json",
+            data: {
+                username: username,
+                fullName: fullName
+            },
+            success: function( data ) {
+                //$('#username').text(data.username);
+                //$('#fullName').text(data.fullName);
+                //$('#created').text(data.created);
+                $('#userList').append('<li><a href="#" class="userInfo" id="' + data.id + '">' + data.username + '</a><a href="#" class="deleteUser">Sil</a></li>');
+            }
+        });
+		return false;
+	});
+	
+	$('.deleteUser').live("click", function(){
+		var $id = $(this).prev('a').attr('id');
+		var $li = $(this).parent('li');
+		$.ajax({
+			type: 'DELETE',
+            url: "@{Application.deleteUser()}",
+            dataType: "json",
+            data: {
+            	id: $id
+            },
+            success: function( data ) {
+				$li.remove();
+            }
+        });
+		return false;
+	});
+	
+	$( "#user" ).autocomplete({
+	    source: function( request, response ) {
+	        $.ajax({
+	            url: "@{Application.users()}",
+	            dataType: "json",
+	            data: {
+	                term: request.term
+	            },
+	            success: function( data ) {
+	                response( $.map( data, function( item ) {
+	                    return {
+	                        label: item.fullName,
+	                        value: item.username
+	                    }
+	                }));
+	            }
+	        });
+	    },
+	    minLength: 2
+	});
+}	
+);
 </script>
