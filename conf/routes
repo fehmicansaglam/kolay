@@ -5,6 +5,9 @@
 # Home page
 GET     /                                       Application.index
 GET     /users                                  Application.users
+GET     /user/?                                 Application.getUser
+POST    /user/?                                 Application.createUser
+DELETE  /user/?                                 Application.deleteUser
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
