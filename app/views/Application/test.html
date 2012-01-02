@@ -1,0 +1,33 @@
+#{extends "main.html" /}
+    <title>Andminister Feeds</title>
+    <script type="text/javascript">
+      function delete(id) {
+
+      }
+    </script>
+  </head>
+  <body>
+    <div id="createButton"><button onclick="$
+('#createButton').hide('300');$('#createForm').show('300')">Add show</
+button></div>
+    <div id="createForm" style="display:none;">
+      <form action="@{Application.addShow()}" method="POST">
+        <label>Show address: </label><input type="input"
+name="feedUrl" /><br />
+        <input type="submit" value="Create" />
+      </form>
+    </div>
+    <table>
+      <tr>
+        <th>Title</th><th>ID</th>
+      </tr>
+      #{list users, as: 'user'}
+        *{<tr>
+          <td>${show.getTitle()}</td><td>${show.getId()}</td>
+          <td><button onclick="delete(${show.getId()})">Delete</button></td>
+        </tr>}*
+      #{/list}
+    </table>
+
+  </body>
+</html>
