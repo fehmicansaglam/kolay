@@ -1,11 +1,7 @@
 package controllers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import models.Cumle;
 import models.Role;
 import models.User;
 import play.Logger;
@@ -15,7 +11,6 @@ import play.mvc.Before;
 import play.mvc.Catch;
 import play.mvc.Controller;
 import play.mvc.Finally;
-import utils.Utils;
 
 public class Application extends Controller {
 
@@ -67,19 +62,8 @@ public class Application extends Controller {
 
     public static void users(String term) {
 
-        // List<User> users = User.find("upper(fullName) like upper(?)",
-        // term + "%").fetch();
-        // renderJSON(users);
-        int x = 5;
-        ArrayList<ArrayList<String>> arrayList = new ArrayList<ArrayList<String>>();
-
-        for (int i = 0; i < x; i++) {
-            ArrayList<String> l2 = new ArrayList<String>();
-            l2.add("text");
-            arrayList.add(l2);
-        }
-
-        renderJSON(arrayList);
+        List<User> users = User.find("upper(fullName) like upper(?)", term + "%").fetch();
+        renderJSON(users);
     }
 
     public static void getUser(Long id) {
@@ -103,26 +87,6 @@ public class Application extends Controller {
         notFoundIfNull(user);
         user.delete();
         renderJSON(true);
-    }
-
-    public static void kokler() {
-
-        Map<String, Integer> map = new HashMap<String, Integer>();
-        List<Cumle> cumleler = Cumle.findAll();
-        for (Cumle cumle : cumleler) {
-            final String cumleString = Utils.temizle(cumle.cumle).trim();
-            final String[] kelimeler = cumleString.split(" ");
-            for (String kelime : kelimeler) {
-                final String kok = Utils.kokBul(kelime);
-                if (map.containsKey(kok)) {
-                    map.put(kok, map.get(kok) + 1);
-                } else {
-                    map.put(kok, 1);
-                }
-            }
-        }
-
-        renderJSON(map);
     }
 
 }

@@ -1,18 +1,6 @@
 #{extends 'main.html' /}
 #{set title:'Home' /}
 
-<button id="button-kokler">Kökler</button>
-<div id="grafik" style="width:600px; height: 400px;"></div>
-<br/>
-<a href="@{Application.save()}">Save</a>
-#{ifErrors}
-   <h1>Oops</h1>
- 
-   #{errors}
-       <li>${error}</li>
-   #{/errors}
-#{/ifErrors}
-
 <ul id="userList">
 #{list users, as: 'user'}
 	<li>
@@ -38,38 +26,7 @@
 <sub>&{'Enter-your-username'}</sub>
 <script>
 $(function(){
-    if (navigator.geolocation) {
-	    navigator.geolocation.getCurrentPosition(function(position) {
-	        $.getJSON('https://api.foursquare.com/v2/venues/search?ll='+ position.coords.latitude +','+ position.coords.longitude +'&intent=browse&radius=2000&client_id=J4OLDCG4OAAK52WTYHF1L4G3ZMLBSDODI5XXITNWJKS11OO3&client_secret=4X2VFQUQSJGGG0JIWGWJZ5TCIGM0EYO43KSIM3NEOEBZEWBY', function(data) {
-	            $.each(data.response.groups[0].items, function(index, item) {
-	                if(item.hereNow.count > 0)
-	                   $("#userList").append('<li>' + item.name + ' ('+ item.location.distance +'m, ' + item.hereNow.count + 'kişi)</li>');
-	            });
-	        });
-	    }, function(err) {});
-	}
     
-	$('#button-kokler').click(function(){
-	    $.ajax({
-			type: 'GET',
-            url: "@{Application.kokler()}",
-            dataType: "json",
-            data: {
-            },
-            success: function( data ) {
-                var $values = new Array();
-            	$.each(data, function(key, value){
-                    $values.push([key, value ]);
-                });
-                console.log($values);
-                $.plot($("#grafik"), [$values], { 
-                xaxis: { mode: "categories" }, 
-                series: {bars: {show: false, barWidth: 0.6}}
-                });
-            }
-        });
-	});
-
 	$('.userInfo').live("click", function(){
 		var id = $(this).attr('id');
 		$.ajax({
@@ -135,11 +92,6 @@ $(function(){
 	                term: request.term
 	            },
 	            success: function( data ) {
-	            	$.each( data , function(i, value1 ) {
-	                    $.each( value1 , function(i, value2  ) {
-	                    alert(value2);
-	                        });
-	                  });     
 	                response( $.map( data, function( item ) {
 	                    return {
 	                        label: item.fullName,
@@ -149,7 +101,7 @@ $(function(){
 	            }
 	        });
 	    },
-	    minLength: 5
+	    minLength: 2
 	}).keypress(function(event){
 		if ( event.which == 13 ) {
 			$("#user").autocomplete( "option", "minLength", 0 ).autocomplete("search").autocomplete( "option", "minLength", 5 );
