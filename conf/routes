@@ -4,6 +4,7 @@
 
 # Home page
 GET     /                                       Application.index
+GET     /test                                   Application.test
 GET     /users                                  Application.users
 GET     /user/?                                 Application.getUser
 POST    /user/?                                 Application.createUser

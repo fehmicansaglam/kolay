@@ -3,3 +3,13 @@
 require:
     - play
     - play -> messages 1.1
+    - postgresql -> postgresql 9.0-801.jdbc4
+    - provided -> zemberek-cekirdek 2.1.1
+    - provided -> zemberek-tr 2.1.1
+    
+repositories:
+    - provided:
+        type: local
+        artifact: "${application.path}/jar/[module]-[revision].jar"
+        contains:
+            - provided -> *

@@ -1,3 +1,4 @@
 # Saved by @messages on Fri May 20 19:49:46 EEST 2011
 Enter-your-username=Kullanıcı adınızı giriniz
 Username=Kullanıcı adı
+validation.required.custom=%1$s is required
