@@ -16,6 +16,7 @@ import play.mvc.Catch;
 import play.mvc.Controller;
 import play.mvc.Finally;
 import utils.Utils;
+import cache.CacheManager;
 
 public class Application extends Controller {
 
@@ -125,4 +126,13 @@ public class Application extends Controller {
         renderJSON(map);
     }
 
+    public static void stats() {
+
+        Long userCount = CacheManager.userCount();
+        Long roleCount = CacheManager.roleCount();
+        Long eventCount = CacheManager.eventCount();
+        Long cumleCount = CacheManager.cumleCount();
+
+        render(userCount, roleCount, eventCount, cumleCount);
+    }
 }
